@@ -184,7 +184,7 @@ func (s StructInit) buildRelated() []analysis.RelatedInformation {
 
 	for i, currentKeyValueExpr := range s.keyValueExprs {
 		previousIndex := i - 1
-		if previousIndex < 1 {
+		if previousIndex < 0 {
 			continue
 		}
 		previousKeyValueExpr := s.keyValueExprs[previousIndex]
@@ -193,8 +193,8 @@ func (s StructInit) buildRelated() []analysis.RelatedInformation {
 		}
 
 		related = append(related, analysis.RelatedInformation{
-			Pos:     currentKeyValueExpr.n.Pos(),
-			End:     currentKeyValueExpr.n.End(),
+			Pos:     previousKeyValueExpr.n.Pos(),
+			End:     previousKeyValueExpr.n.End(),
 			Message: "field initialized out of position",
 		})
 	}
