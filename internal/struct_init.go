@@ -37,7 +37,7 @@ type (
 // NewStructInit returns a StructInit if the given composite literal is a struct initialization.
 func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
 	keyValueExprs := make([]*keyValueExpr, 0, len(cl.Elts))
-	for _, elt := range cl.Elts {
+	for originalIndex, elt := range cl.Elts {
 		kv, isKeyValue := elt.(*ast.KeyValueExpr)
 		if !isKeyValue {
 			return StructInit{}, false
@@ -47,7 +47,7 @@ func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
 		case *ast.Ident, *ast.BasicLit, *ast.CompositeLit:
 			keyValueExprs = append(keyValueExprs, &keyValueExpr{
 				n:             kv,
-				originalIndex: -1,
+				originalIndex: originalIndex,
 				expectedIndex: -1,
 			})
 		default:
@@ -132,7 +132,6 @@ func (s StructInit) assignIndexes(expectedOrder []string) bool {
 			hasFieldNotOrdered = true
 			x := s.keyValueExprs[originalIndex]
 			x.expectedIndex = expectedIndex
-			x.originalIndex = originalIndex
 		}
 	}
 

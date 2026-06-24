@@ -11,21 +11,21 @@ var _ analysis.Fact = new(HasFieldOrder)
 
 // HasFieldOrder is a Fact attached to structs listing the field instantiation order.
 type HasFieldOrder struct {
-	// orderedList ordered slice with the field names in the struct that are expected to be in order.
-	orderedList []string
+	// OrderedList ordered slice with the field names in the struct that are expected to be in order.
+	OrderedList []string
 }
 
 func NewHasFieldOrder(ol []string) *HasFieldOrder {
-	return &HasFieldOrder{orderedList: ol}
+	return &HasFieldOrder{OrderedList: ol}
 }
 
 func (h HasFieldOrder) AFact() {}
 
 // FieldOrder returns a defensive copy of the expected field order.
 func (h HasFieldOrder) FieldOrder() []string {
-	return slices.Clone(h.orderedList)
+	return slices.Clone(h.OrderedList)
 }
 
 func (h HasFieldOrder) String() string {
-	return fmt.Sprintf("HasFieldOrder%s", h.orderedList)
+	return fmt.Sprintf("HasFieldOrder%s", h.OrderedList)
 }
