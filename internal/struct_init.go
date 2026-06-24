@@ -182,17 +182,19 @@ func (s StructInit) assignComments(pass *analysis.Pass) {
 func (s StructInit) buildRelated() []analysis.RelatedInformation {
 	related := make([]analysis.RelatedInformation, 0)
 
-	for i, mf := range s.keyValueExprs {
+	for i, currentKeyValueExpr := range s.keyValueExprs {
 		previousIndex := i - 1
-		if previousIndex > 0 {
-			if s.keyValueExprs[previousIndex].expectedIndex < mf.expectedIndex {
-				continue
-			}
+		if previousIndex < 1 {
+			continue
+		}
+		previousKeyValueExpr := s.keyValueExprs[previousIndex]
+		if previousKeyValueExpr.expectedIndex < currentKeyValueExpr.expectedIndex {
+			continue
 		}
 
 		related = append(related, analysis.RelatedInformation{
-			Pos:     s.keyValueExprs[mf.originalIndex].n.Pos(),
-			End:     s.keyValueExprs[mf.originalIndex].n.End(),
+			Pos:     currentKeyValueExpr.n.Pos(),
+			End:     currentKeyValueExpr.n.End(),
 			Message: "field initialized out of position",
 		})
 	}
