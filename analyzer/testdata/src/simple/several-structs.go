@@ -1,0 +1,34 @@
+package simple
+
+type (
+	//go:structinit
+	A struct { // want A:"HasFieldOrder\\[name surname\\]"
+		name    string
+		surname string
+	}
+
+	//go:structinit
+	B struct { // want B:"HasFieldOrder\\[name surname\\]"
+		name, surname string
+	}
+)
+
+func newA() A {
+	return A{ // want "fields are not initialized in declared order"
+		surname: "bar",
+		name:    "foo",
+	}
+}
+
+func newAInlined() A {
+	return A{ // want "fields are not initialized in declared order"
+		surname: "bar", name: "foo",
+	}
+}
+
+func newB() B {
+	return B{ // want "fields are not initialized in declared order"
+		surname: "bar",
+		name:    "foo",
+	}
+}

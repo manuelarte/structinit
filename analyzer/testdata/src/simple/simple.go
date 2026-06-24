@@ -1,0 +1,72 @@
+package simple
+
+//go:structinit
+type Simple struct { // want Simple:"HasFieldOrder\\[Name Surname\\]"
+	Name    string
+	Surname string
+}
+
+func SimpleDefault() Simple {
+	return Simple{}
+}
+
+func NewPtrSimpleUnordered(name, surname string) *Simple {
+	return &Simple{ // want "fields are not initialized in declared order"
+		Surname: surname,
+		Name:    name,
+	}
+}
+
+func NewPtrSimpleOrdered(name, surname string) *Simple {
+	return &Simple{
+		Name:    name,
+		Surname: surname,
+	}
+}
+
+func NewSimpleUnordered(name, surname string) Simple {
+	return Simple{ // want "fields are not initialized in declared order"
+		Surname: surname,
+		Name:    name,
+	}
+}
+
+func NewSimpleOrdered(name, surname string) Simple {
+	return Simple{
+		Name:    name,
+		Surname: surname,
+	}
+}
+
+type NotApplicableSimple struct {
+	Name    string
+	Surname string
+}
+
+func NewPtrNotApplicableSimpleUnordered(name, surname string) *NotApplicableSimple {
+	return &NotApplicableSimple{
+		Surname: surname,
+		Name:    name,
+	}
+}
+
+func NewPtrNNotApplicableSimpleOrdered(name, surname string) *NotApplicableSimple {
+	return &NotApplicableSimple{
+		Name:    name,
+		Surname: surname,
+	}
+}
+
+func NewNotApplicableSimpleUnordered(name, surname string) NotApplicableSimple {
+	return NotApplicableSimple{
+		Surname: surname,
+		Name:    name,
+	}
+}
+
+func NewNotApplicableSimpleOrdered(name, surname string) NotApplicableSimple {
+	return NotApplicableSimple{
+		Name:    name,
+		Surname: surname,
+	}
+}

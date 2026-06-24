@@ -1,0 +1,70 @@
+package simple
+
+//go:structinit
+type NotAllFields struct { // want NotAllFields:"HasFieldOrder\\[Name Surname Age\\]"
+	Name    string
+	Surname string
+	Age     int
+}
+
+func NewPtrNotAllFieldsUnordered(name, surname string) *NotAllFields {
+	return &NotAllFields{ // want "fields are not initialized in declared order"
+		Surname: surname,
+		Name:    name,
+	}
+}
+
+func NewPtrNotAllFieldsOrdered(name, surname string) *NotAllFields {
+	return &NotAllFields{
+		Name:    name,
+		Surname: surname,
+	}
+}
+
+func NewNotAllFieldsUnordered(name, surname string) NotAllFields {
+	return NotAllFields{ // want "fields are not initialized in declared order"
+		Surname: surname,
+		Name:    name,
+	}
+}
+
+func NewNotAllFieldsOrdered(name, surname string) NotAllFields {
+	return NotAllFields{
+		Name:    name,
+		Surname: surname,
+	}
+}
+
+type NotApplicableNotAllFields struct {
+	Name    string
+	Surname string
+	Age     int
+}
+
+func NewPtrNNotApplicableNotAllFieldsUnordered(name, surname string) *NotApplicableNotAllFields {
+	return &NotApplicableNotAllFields{
+		Surname: surname,
+		Name:    name,
+	}
+}
+
+func NewPtrNotApplicableNotAllFieldsOrdered(name, surname string) *NotApplicableNotAllFields {
+	return &NotApplicableNotAllFields{
+		Name:    name,
+		Surname: surname,
+	}
+}
+
+func NewNotApplicableNotAllFieldsUnordered(name, surname string) NotApplicableNotAllFields {
+	return NotApplicableNotAllFields{
+		Surname: surname,
+		Name:    name,
+	}
+}
+
+func NewNotApplicableNotAllFieldsOrdered(name, surname string) NotApplicableNotAllFields {
+	return NotApplicableNotAllFields{
+		Name:    name,
+		Surname: surname,
+	}
+}
