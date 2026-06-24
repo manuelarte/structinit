@@ -6,6 +6,7 @@ import (
 	"go/ast"
 	"go/printer"
 	"go/token"
+	"strings"
 )
 
 func containsDirective(doc *ast.CommentGroup) bool {
@@ -14,7 +15,7 @@ func containsDirective(doc *ast.CommentGroup) bool {
 	}
 
 	for _, comment := range doc.List {
-		if comment.Text == "//go:structinit" {
+		if strings.HasPrefix(comment.Text, "//go:structinit") {
 			return true
 		}
 	}

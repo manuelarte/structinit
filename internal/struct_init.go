@@ -128,8 +128,10 @@ func (s StructInit) assignIndexes(expectedOrder []string) bool {
 			exprIdent, isIdent := expr.n.Key.(*ast.Ident)
 
 			return isIdent && exprIdent.Name == name
-		}); originalIndex != expectedIndex {
-			hasFieldNotOrdered = true
+		}); originalIndex != -1 {
+			if originalIndex != expectedIndex {
+				hasFieldNotOrdered = true
+			}
 			x := s.keyValueExprs[originalIndex]
 			x.expectedIndex = expectedIndex
 		}
@@ -180,10 +182,6 @@ func (s StructInit) buildRelated() []analysis.RelatedInformation {
 	related := make([]analysis.RelatedInformation, 0)
 
 	for _, mf := range s.keyValueExprs {
-		if mf.originalIndex == mf.expectedIndex {
-			continue
-		}
-
 		related = append(related, analysis.RelatedInformation{
 			Pos:     s.keyValueExprs[mf.originalIndex].n.Pos(),
 			End:     s.keyValueExprs[mf.originalIndex].n.End(),
