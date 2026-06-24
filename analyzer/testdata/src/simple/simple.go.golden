@@ -1,9 +1,13 @@
-package simple_fix
+package simple
 
 //go:structinit
 type Simple struct { // want Simple:"HasFieldOrder\\[Name Surname\\]"
 	Name    string
 	Surname string
+}
+
+func SimpleDefault() Simple {
+	return Simple{}
 }
 
 func NewPtrSimpleUnordered(name, surname string) *Simple {
@@ -39,28 +43,28 @@ type NotApplicableSimple struct {
 	Surname string
 }
 
-func NewPtrNASimpleUnordered(name, surname string) *NotApplicableSimple {
+func NewPtrNotApplicableSimpleUnordered(name, surname string) *NotApplicableSimple {
 	return &NotApplicableSimple{
 		Surname: surname,
 		Name:    name,
 	}
 }
 
-func NewPtrNASimpleOrdered(name, surname string) *NotApplicableSimple {
+func NewPtrNNotApplicableSimpleOrdered(name, surname string) *NotApplicableSimple {
 	return &NotApplicableSimple{
 		Name:    name,
 		Surname: surname,
 	}
 }
 
-func NewNASimpleUnordered(name, surname string) NotApplicableSimple {
+func NewNotApplicableSimpleUnordered(name, surname string) NotApplicableSimple {
 	return NotApplicableSimple{
 		Surname: surname,
 		Name:    name,
 	}
 }
 
-func NewNASimpleOrdered(name, surname string) NotApplicableSimple {
+func NewNotApplicableSimpleOrdered(name, surname string) NotApplicableSimple {
 	return NotApplicableSimple{
 		Name:    name,
 		Surname: surname,

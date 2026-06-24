@@ -50,10 +50,10 @@ func TestAnalyzerWithFix(t *testing.T) {
 		options  map[string]string
 	}{
 		"simple fix": {
-			patterns: "simple-fix",
+			patterns: "simple",
 		},
 		"comments fix": {
-			patterns: "comments-fix",
+			patterns: "comments",
 		},
 	}
 

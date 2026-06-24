@@ -37,7 +37,7 @@ type (
 // NewStructInit returns a StructInit if the given composite literal is a struct initialization.
 func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
 	keyValueExprs := make([]*keyValueExpr, 0, len(cl.Elts))
-	for _, elt := range cl.Elts {
+	for originalIndex, elt := range cl.Elts {
 		kv, isKeyValue := elt.(*ast.KeyValueExpr)
 		if !isKeyValue {
 			return StructInit{}, false
@@ -47,7 +47,7 @@ func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
 		case *ast.Ident, *ast.BasicLit, *ast.CompositeLit:
 			keyValueExprs = append(keyValueExprs, &keyValueExpr{
 				n:             kv,
-				originalIndex: -1,
+				originalIndex: originalIndex,
 				expectedIndex: -1,
 			})
 		default:
@@ -128,11 +128,13 @@ func (s StructInit) assignIndexes(expectedOrder []string) bool {
 			exprIdent, isIdent := expr.n.Key.(*ast.Ident)
 
 			return isIdent && exprIdent.Name == name
-		}); originalIndex != expectedIndex {
-			hasFieldNotOrdered = true
+		}); originalIndex != -1 {
+			if originalIndex != expectedIndex {
+				hasFieldNotOrdered = true
+			}
+
 			x := s.keyValueExprs[originalIndex]
 			x.expectedIndex = expectedIndex
-			x.originalIndex = originalIndex
 		}
 	}
 
@@ -180,14 +182,20 @@ func (s StructInit) assignComments(pass *analysis.Pass) {
 func (s StructInit) buildRelated() []analysis.RelatedInformation {
 	related := make([]analysis.RelatedInformation, 0)
 
-	for _, mf := range s.keyValueExprs {
-		if mf.originalIndex == mf.expectedIndex {
+	for i, currentKeyValueExpr := range s.keyValueExprs {
+		previousIndex := i - 1
+		if previousIndex < 0 {
+			continue
+		}
+
+		previousKeyValueExpr := s.keyValueExprs[previousIndex]
+		if previousKeyValueExpr.expectedIndex < currentKeyValueExpr.expectedIndex {
 			continue
 		}
 
 		related = append(related, analysis.RelatedInformation{
-			Pos:     s.keyValueExprs[mf.originalIndex].n.Pos(),
-			End:     s.keyValueExprs[mf.originalIndex].n.End(),
+			Pos:     previousKeyValueExpr.n.Pos(),
+			End:     previousKeyValueExpr.n.End(),
 			Message: "field initialized out of position",
 		})
 	}
@@ -202,6 +210,10 @@ func (s StructInit) buildSuggestedFixes(
 	fset := pass.Fset
 
 	for _, mf := range s.keyValueExprs {
+		if mf.expectedIndex == -1 {
+			return nil, nil
+		}
+
 		originalKv := s.keyValueExprs[mf.originalIndex]
 		expectedKv := s.keyValueExprs[mf.expectedIndex]
 
