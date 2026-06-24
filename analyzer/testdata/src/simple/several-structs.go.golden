@@ -1,4 +1,4 @@
-package simple_fix
+package simple
 
 type (
 	//go:structinit
@@ -15,20 +15,20 @@ type (
 
 func newA() A {
 	return A{ // want "fields are not initialized in declared order"
-		surname: "bar",
 		name:    "foo",
+		surname: "bar",
 	}
 }
 
 func newAInlined() A {
 	return A{ // want "fields are not initialized in declared order"
-		surname: "bar", name: "foo",
+		name: "foo", surname: "bar",
 	}
 }
 
 func newB() B {
 	return B{ // want "fields are not initialized in declared order"
+	    name:    "foo",
 		surname: "bar",
-		name:    "foo",
 	}
 }

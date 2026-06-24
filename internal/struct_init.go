@@ -187,6 +187,7 @@ func (s StructInit) buildRelated() []analysis.RelatedInformation {
 		if previousIndex < 0 {
 			continue
 		}
+
 		previousKeyValueExpr := s.keyValueExprs[previousIndex]
 		if previousKeyValueExpr.expectedIndex < currentKeyValueExpr.expectedIndex {
 			continue
