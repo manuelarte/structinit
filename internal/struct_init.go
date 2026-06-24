@@ -201,6 +201,10 @@ func (s StructInit) buildSuggestedFixes(
 	fset := pass.Fset
 
 	for _, mf := range s.keyValueExprs {
+		if mf.expectedIndex == -1 {
+			return nil, nil
+		}
+
 		originalKv := s.keyValueExprs[mf.originalIndex]
 		expectedKv := s.keyValueExprs[mf.expectedIndex]
 
