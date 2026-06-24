@@ -132,6 +132,7 @@ func (s StructInit) assignIndexes(expectedOrder []string) bool {
 			if originalIndex != expectedIndex {
 				hasFieldNotOrdered = true
 			}
+
 			x := s.keyValueExprs[originalIndex]
 			x.expectedIndex = expectedIndex
 		}
@@ -181,7 +182,14 @@ func (s StructInit) assignComments(pass *analysis.Pass) {
 func (s StructInit) buildRelated() []analysis.RelatedInformation {
 	related := make([]analysis.RelatedInformation, 0)
 
-	for _, mf := range s.keyValueExprs {
+	for i, mf := range s.keyValueExprs {
+		previousIndex := i - 1
+		if previousIndex > 0 {
+			if s.keyValueExprs[previousIndex].expectedIndex < mf.expectedIndex {
+				continue
+			}
+		}
+
 		related = append(related, analysis.RelatedInformation{
 			Pos:     s.keyValueExprs[mf.originalIndex].n.Pos(),
 			End:     s.keyValueExprs[mf.originalIndex].n.End(),
