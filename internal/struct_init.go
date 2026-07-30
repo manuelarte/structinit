@@ -37,6 +37,7 @@ type (
 // NewStructInit returns a StructInit if the given composite literal is a struct initialization.
 func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
 	numberOfCallExpr := 0
+
 	keyValueExprs := make([]*keyValueExpr, 0, len(cl.Elts))
 	for originalIndex, elt := range cl.Elts {
 		kv, isKeyValue := elt.(*ast.KeyValueExpr)
@@ -56,6 +57,7 @@ func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
 			if numberOfCallExpr > 1 {
 				return StructInit{}, false
 			}
+
 			keyValueExprs = append(keyValueExprs, &keyValueExpr{
 				n:             kv,
 				originalIndex: originalIndex,

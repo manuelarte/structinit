@@ -1,4 +1,7 @@
-lint:
+fmt:
+	golangci-lint fmt ./...
+
+lint: fmt
 	golangci-lint run --fix ./...
 
 test:
