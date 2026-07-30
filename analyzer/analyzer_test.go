@@ -22,8 +22,8 @@ func TestAnalyzer(t *testing.T) {
 		"side effects": {
 			patterns: "side-effects",
 		},
-		"bug config": {
-			patterns: "bug-config",
+		"call expression": {
+			patterns: "call-expression",
 		},
 	}
 
