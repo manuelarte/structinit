@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3](https://github.com/manuelarte/structinit/compare/v0.0.2...v0.0.3) (2026-07-30)
+
+
+### Bug Fixes
+
+* struct init with one call expression ([#12](https://github.com/manuelarte/structinit/issues/12)) ([751d81b](https://github.com/manuelarte/structinit/commit/751d81be6500e5a9c66fdae020e154af7a755d88))
+
 ## [0.0.2](https://github.com/manuelarte/structinit/compare/v0.0.1...v0.0.2) (2026-06-24)
 
 
