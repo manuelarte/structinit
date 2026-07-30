@@ -63,7 +63,7 @@ func exportStructFact(pass *analysis.Pass) {
 		for _, spec := range gd.Specs {
 			ts, isTypeSpec := spec.(*ast.TypeSpec)
 			if !isTypeSpec {
-				return
+				continue
 			}
 
 			doc := ts.Doc
@@ -73,12 +73,12 @@ func exportStructFact(pass *analysis.Pass) {
 
 			sd, ok := internal.NewStructDecl(ts, doc)
 			if !ok {
-				return
+				continue
 			}
 
 			ti, hasTypeInfo := pass.TypesInfo.Defs[ts.Name]
 			if !hasTypeInfo {
-				return
+				continue
 			}
 
 			pass.ExportObjectFact(ti, internal.NewHasFieldOrder(sd.FieldOrder()))

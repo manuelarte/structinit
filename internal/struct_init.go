@@ -12,7 +12,7 @@ type (
 	// StructInit represents a struct initialization. It has to be a composite literal in which
 	// the fields follow this pattern:
 	// - key: *ast.Ident
-	// - value: *ast.BasicLit | *ast.CompositeLit | *ast.Ident
+	// - value: *ast.BasicLit | *ast.CompositeLit | *ast.Ident | *ast.CallExpr (when there is only one call expression)
 	// any other combination is not supported.
 	StructInit struct {
 		compositeLiteral *ast.CompositeLit
@@ -36,6 +36,8 @@ type (
 
 // NewStructInit returns a StructInit if the given composite literal is a struct initialization.
 func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
+	numberOfCallExpr := 0
+
 	keyValueExprs := make([]*keyValueExpr, 0, len(cl.Elts))
 	for originalIndex, elt := range cl.Elts {
 		kv, isKeyValue := elt.(*ast.KeyValueExpr)
@@ -50,6 +52,18 @@ func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
 				originalIndex: originalIndex,
 				expectedIndex: -1,
 			})
+		case *ast.CallExpr:
+			numberOfCallExpr++
+			if numberOfCallExpr > 1 {
+				return StructInit{}, false
+			}
+
+			keyValueExprs = append(keyValueExprs, &keyValueExpr{
+				n:             kv,
+				originalIndex: originalIndex,
+				expectedIndex: -1,
+			})
+
 		default:
 			return StructInit{}, false
 		}
