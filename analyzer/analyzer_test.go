@@ -22,6 +22,9 @@ func TestAnalyzer(t *testing.T) {
 		"side effects": {
 			patterns: "side-effects",
 		},
+		"bug config": {
+			patterns: "bug-config",
+		},
 	}
 
 	for name, test := range testCases {
