@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.0.1](https://github.com/manuelarte/structinit/compare/v0.0.4...v0.0.1) (2026-08-02)
+
+
+### Features
+
+* linting and fixing unordered struct initialization ([9ea0385](https://github.com/manuelarte/structinit/commit/9ea03851a218d6ed52adf5e5e43f9a615db5a50d))
+
+
+### Bug Fixes
+
+* fix golangci-lint module warnings ([#7](https://github.com/manuelarte/structinit/issues/7)) ([5560fb6](https://github.com/manuelarte/structinit/commit/5560fb6c1507a00f5ec44ba4a42e00dadf29a099))
+* make also allowed ([#18](https://github.com/manuelarte/structinit/issues/18)) ([55a19f8](https://github.com/manuelarte/structinit/commit/55a19f8606e5502f904491d2c26221058947ccee))
+* struct init with one call expression ([#12](https://github.com/manuelarte/structinit/issues/12)) ([751d81b](https://github.com/manuelarte/structinit/commit/751d81be6500e5a9c66fdae020e154af7a755d88))
+
+
+### Miscellaneous Chores
+
+* release v0.0.1 ([5cb53dd](https://github.com/manuelarte/structinit/commit/5cb53ddf5413987523618409a796ff9a7a31c9b5))
+
 ## [0.0.4](https://github.com/manuelarte/structinit/compare/v0.0.3...v0.0.4) (2026-08-02)
 
 
