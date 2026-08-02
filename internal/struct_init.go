@@ -45,7 +45,7 @@ func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
 			return StructInit{}, false
 		}
 
-		switch kv.Value.(type) {
+		switch value := kv.Value.(type) {
 		case *ast.Ident, *ast.BasicLit, *ast.CompositeLit:
 			keyValueExprs = append(keyValueExprs, &keyValueExpr{
 				n:             kv,
@@ -53,7 +53,10 @@ func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
 				expectedIndex: -1,
 			})
 		case *ast.CallExpr:
-			numberOfCallExpr++
+			if !isMakeFunction(value) {
+				numberOfCallExpr++
+			}
+
 			if numberOfCallExpr > 1 {
 				return StructInit{}, false
 			}
@@ -302,4 +305,13 @@ func (s StructInit) getCommentGroups(pass *analysis.Pass) ([]*ast.CommentGroup, 
 	}
 
 	return comments, true
+}
+
+func isMakeFunction(value *ast.CallExpr) bool {
+	funIdent, isIdent := value.Fun.(*ast.Ident)
+	if !isIdent || funIdent.Name != "make" {
+		return false
+	}
+
+	return true
 }

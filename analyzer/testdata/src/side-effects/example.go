@@ -8,7 +8,7 @@ type A struct { // want A:"HasFieldOrder\\[b a\\]"
 }
 
 func NewA() *A {
-	// info: if we reorder the values of a, and b are different.
+	// info: if we reorder, the values of "a", and "b" are different.
 	incF := inc()
 	return &A{
 		a: incF(),
@@ -18,8 +18,10 @@ func NewA() *A {
 
 func inc() func() int {
 	var i int
+
 	return func() int {
 		i++
+
 		return i
 	}
 }
