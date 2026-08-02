@@ -1,0 +1,70 @@
+name: Dependabot Auto-merge
+
+on:
+  pull_request_target:
+    branches: [main]
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  dependabot-automerge:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: read
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Determine if auto-mergeable
+        id: should_merge
+        run: |
+          UPDATE_TYPE="${{ steps.metadata.outputs.update-type }}"
+          DEP_TYPE="${{ steps.metadata.outputs.dependency-type }}"
+
+          # Auto-merge for minors and patches
+          if [[ "$UPDATE_TYPE" == "version-update:semver-minor" || "$UPDATE_TYPE" == "version-update:semver-patch" ]]; then
+            echo "should_merge=true" >> $GITHUB_OUTPUT
+            echo "merge_type=$UPDATE_TYPE" >> $GITHUB_OUTPUT
+          # Auto-merge for GitHub Actions (any version)
+          elif [[ "$DEP_TYPE" == "github-actions" ]]; then
+            echo "should_merge=true" >> $GITHUB_OUTPUT
+            echo "merge_type=github-actions" >> $GITHUB_OUTPUT
+          # Major version updates (non-actions)
+          else
+            echo "should_merge=false" >> $GITHUB_OUTPUT
+            echo "merge_type=major" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Auto-approve Dependabot PR
+        if: steps.should_merge.outputs.should_merge == 'true'
+        run: |
+          gh pr review --approve "$PR_URL" \
+            --body "🤖 Auto-approving Dependabot ${{ steps.should_merge.outputs.merge_type }} update"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable auto-merge for safe updates
+        if: steps.should_merge.outputs.should_merge == 'true'
+        run: |
+          gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment on major version updates
+        if: steps.should_merge.outputs.should_merge == 'false'
+        run: |
+          gh pr comment "$PR_URL" \
+            --body "🚨 **Major version update detected** - This PR requires manual review before merging as it may contain breaking changes."
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -112,7 +112,7 @@ func lintStructsInitialization(pass *analysis.Pass) {
 			return
 		}
 
-		structInit, ok := internal.NewStructInit(cl)
+		structInit, ok := internal.NewStructInit(cl, pass)
 		if !ok {
 			return
 		}

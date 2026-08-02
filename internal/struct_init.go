@@ -3,6 +3,7 @@ package internal
 import (
 	"go/ast"
 	"go/token"
+	"go/types"
 	"slices"
 
 	"golang.org/x/tools/go/analysis"
@@ -35,7 +36,7 @@ type (
 )
 
 // NewStructInit returns a StructInit if the given composite literal is a struct initialization.
-func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
+func NewStructInit(cl *ast.CompositeLit, pass *analysis.Pass) (StructInit, bool) {
 	numberOfCallExpr := 0
 
 	keyValueExprs := make([]*keyValueExpr, 0, len(cl.Elts))
@@ -45,7 +46,7 @@ func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
 			return StructInit{}, false
 		}
 
-		switch kv.Value.(type) {
+		switch value := kv.Value.(type) {
 		case *ast.Ident, *ast.BasicLit, *ast.CompositeLit:
 			keyValueExprs = append(keyValueExprs, &keyValueExpr{
 				n:             kv,
@@ -53,7 +54,10 @@ func NewStructInit(cl *ast.CompositeLit) (StructInit, bool) {
 				expectedIndex: -1,
 			})
 		case *ast.CallExpr:
-			numberOfCallExpr++
+			if !isMakeFunction(value, pass) {
+				numberOfCallExpr++
+			}
+
 			if numberOfCallExpr > 1 {
 				return StructInit{}, false
 			}
@@ -302,4 +306,18 @@ func (s StructInit) getCommentGroups(pass *analysis.Pass) ([]*ast.CommentGroup, 
 	}
 
 	return comments, true
+}
+
+func isMakeFunction(value *ast.CallExpr, pass *analysis.Pass) bool {
+	funIdent, isIdent := value.Fun.(*ast.Ident)
+	if !isIdent || funIdent.Name != "make" {
+		return false
+	}
+
+	builtin, ok := pass.TypesInfo.Uses[funIdent].(*types.Builtin)
+	if !ok {
+		return false
+	}
+
+	return builtin.Name() == "make"
 }
