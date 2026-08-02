@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.4](https://github.com/manuelarte/structinit/compare/v0.0.3...v0.0.4) (2026-08-02)
+
+
+### Bug Fixes
+
+* make also allowed ([#18](https://github.com/manuelarte/structinit/issues/18)) ([55a19f8](https://github.com/manuelarte/structinit/commit/55a19f8606e5502f904491d2c26221058947ccee))
+
 ## [0.0.3](https://github.com/manuelarte/structinit/compare/v0.0.2...v0.0.3) (2026-07-30)
 
 
