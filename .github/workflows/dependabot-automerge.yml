@@ -28,7 +28,7 @@ jobs:
         run: |
           UPDATE_TYPE="${{ steps.metadata.outputs.update-type }}"
           DEP_TYPE="${{ steps.metadata.outputs.dependency-type }}"
-          
+
           # Auto-merge for minors and patches
           if [[ "$UPDATE_TYPE" == "version-update:semver-minor" || "$UPDATE_TYPE" == "version-update:semver-patch" ]]; then
             echo "should_merge=true" >> $GITHUB_OUTPUT
